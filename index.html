@@ -38,9 +38,12 @@ body{
 
 .form-row{
     display:grid;
-    grid-template-columns:180px 1fr;
+    grid-template-columns:100px 1fr;
     margin-bottom:12px;
     align-items:center;
+}
+#date{
+    max-width:220px;
 }
 
 label{
@@ -244,10 +247,12 @@ button:hover{
 }
 
 .summaryTable{
-    width:100%;
+    min-width:1000px;
     border-collapse:collapse;
     table-layout:fixed;
 }
+
+
 .summaryTable th,
 .summaryTable td{
     border:1px solid #ccc;
@@ -335,6 +340,39 @@ button:hover{
     height:50px;
 }
 
+@media (max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    .card{
+        padding:12px;
+    }
+
+    .form-row{
+        grid-template-columns:90px 1fr;
+    }
+
+    .filterBar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .employeeFilter{
+        justify-content:center;
+        gap:20px;
+    }
+
+    .employeeFilter label{
+        width:120px;
+        text-align:center;
+    }
+
+    #date{
+        max-width:180px;
+    }
+}
 
 </style>
 </head>
@@ -528,6 +566,8 @@ id="calendarTable">
 Monthly Summary
 </h2>
 
+<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+
 <table class="summaryTable">
 
 <tr>
@@ -559,6 +599,8 @@ Monthly Summary
 </tbody>
 
 </table>
+
+</div>
 
 <div id="employeeFilter"
 class="employeeFilter">
