@@ -247,11 +247,11 @@ button:hover{
 }
 
 .summaryTable{
-    min-width:1000px;
+    min-width:650px;
     border-collapse:collapse;
     table-layout:fixed;
+    font-size:12px;
 }
-
 
 .summaryTable th,
 .summaryTable td{
@@ -373,6 +373,25 @@ button:hover{
         max-width:180px;
     }
 }
+.summaryTable td:first-child,
+.summaryTable th:first-child{
+    width:180px !important;
+    font-size:12px;
+    word-break:break-word;
+}
+@media (max-width:768px){
+
+    .summaryTable{
+        min-width:650px;
+        font-size:11px;
+    }
+
+    .summaryTable td,
+    .summaryTable th{
+        padding:4px;
+    }
+}
+
 
 </style>
 </head>
@@ -456,6 +475,10 @@ Submit Application
 
     <div id="yearButtons" class="yearButtons">
 
+<button type="button" class="yearBtn" data-year="2022">2022</button>
+<button type="button" class="yearBtn" data-year="2023">2023</button>
+<button type="button" class="yearBtn" data-year="2024">2024</button>
+
 <button type="button" class="yearBtn" data-year="2025">2025</button>
 <button type="button" class="yearBtn" data-year="2026">2026</button>
 <button type="button" class="yearBtn" data-year="2027">2027</button>
@@ -467,10 +490,6 @@ Submit Application
 <button type="button" class="yearBtn" data-year="2031">2031</button>
 <button type="button" class="yearBtn" data-year="2032">2032</button>
 <button type="button" class="yearBtn" data-year="2033">2033</button>
-
-<button type="button" class="yearBtn" data-year="2034">2034</button>
-<button type="button" class="yearBtn" data-year="2035">2035</button>
-<button type="button" class="yearBtn" data-year="2036">2036</button>
 
     </div>
 
@@ -572,26 +591,17 @@ Monthly Summary
 
 <tr>
 
-<th style="width:250px;background:#2E75B6;color:black;">Name</th>
+<th style="width:180px;background:#2E75B6;color:black;">Name</th>
 
-<th style="width:60px;background:#2E75B6;color:black;">AL</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">AM AL</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">PM AL</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">MC</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">EL</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">WFH</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">PEN</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">KLM</th>
-
-<th style="width:60px;background:#2E75B6;color:black;">OT</th>
-
+<th style="width:45px;background:#2E75B6;color:black;">AL</th>
+<th style="width:45px;background:#2E75B6;color:black;">AM AL</th>
+<th style="width:45px;background:#2E75B6;color:black;">PM AL</th>
+<th style="width:45px;background:#2E75B6;color:black;">MC</th>
+<th style="width:45px;background:#2E75B6;color:black;">EL</th>
+<th style="width:45px;background:#2E75B6;color:black;">WFH</th>
+<th style="width:45px;background:#2E75B6;color:black;">PEN</th>
+<th style="width:45px;background:#2E75B6;color:black;">KLM</th>
+<th style="width:45px;background:#2E75B6;color:black;">OT</th>
 </tr>
 
 <tbody id="summaryBody">
@@ -610,13 +620,10 @@ class="employeeFilter">
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script><script>
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbyP2BlgeC5IqONTzSV6MxDdlqARMerLZf1ssIeT4_qUqz0Hl-tXkKL7TVLojmaESNEFFw/exec";
-``
-
 
 let selectedMonth;
 let selectedYear;
