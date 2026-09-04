@@ -561,9 +561,9 @@ R.P.H
         Monthly Team Calendar
     </h2>
 
-    <button onclick="renderDashboard()">
-        Refresh
-    </button>
+<button onclick="refreshDashboardData()">
+    Refresh
+</button>
 
 </div>
 <div style="overflow:auto">
@@ -1174,47 +1174,61 @@ ${count["OT"]}
 
     body.innerHTML = html;
 }
+async function refreshDashboardData(){
 
+    const response = await fetch(
+        API_URL + "?action=dashboard&_=" + Date.now()
+    );
+
+    dashboardData = await response.json();
+
+    renderDashboard();
+}
 async function submitLeave(){
 
     const data = {
-
-        name:
-        document.getElementById(
-            "name"
-        ).value,
-
-        date:
-        document.getElementById(
-            "date"
-        ).value,
-
-        leaveType:
-        document.getElementById(
-            "leaveType"
-        ).value,
-
-        reason:
-        document.getElementById(
-            "reason"
-        ).value || "N/A"
-
+        name: document.getElementById("name").value,
+        date: document.getElementById("date").value,
+        leaveType: document.getElementById("leaveType").value,
+        reason: document.getElementById("reason").value || "N/A"
     };
 
-    await fetch(
-        API_URL,
-        {
+    try{
+
+        const response = await fetch(API_URL,{
             method:"POST",
             body:JSON.stringify(data)
-        }
-    );
+        });
 
-    document
-    .getElementById("msg")
-    .innerHTML =
-    "✅ Submitted";
-        
-    loadDashboard();
+        if(!response.ok){
+            throw new Error("Submission failed");
+        }
+
+        alert("✅ Leave Application Submitted Successfully");
+
+        document.getElementById("msg").innerHTML =
+            "<span style='color:green;font-weight:bold'>✅ Submitted Successfully</span>";
+
+
+const refreshResponse = await fetch(
+    API_URL + "?action=dashboard&_=" + Date.now()
+);
+
+dashboardData = await refreshResponse.json();
+
+renderDashboard();
+
+
+
+    }catch(err){
+
+        alert("❌ Submission Failed");
+
+        document.getElementById("msg").innerHTML =
+            "<span style='color:red;font-weight:bold'>❌ Submission Failed</span>";
+
+        console.error(err);
+    }
 }
 
 
