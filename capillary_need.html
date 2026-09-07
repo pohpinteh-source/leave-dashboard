@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Capillary Need Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f5f5f5;
+    font-size:15px;
+    margin:6px;
+    text-align:center;
+}
+
+.container{
+    width:100%;
+}
+
+/* Orange Title Bar */
+.title{
+    background:#f4a300;
+    color:black;
+    font-size:22px;
+    text-align:center;
+    padding:15px;
+    margin:0 0 10px 0;
+    font-weight:bold;
+    border-radius:4px;
+    line-height:1.3;
+}
+/* table */
+table{
+    border-collapse:collapse;
+    width:100%;
+    table-layout:fixed;
+}
+
+td{
+    border:1px solid black;
+    padding:12px 8px;
+    text-align:center;
+    vertical-align:middle;
+}
+
+.header{
+    background:#e6ac7c;
+    font-weight:bold;
+}
+
+.yellow{
+    background:yellow;
+}
+
+.result{
+    background:#f8cbad;
+    font-weight:bold;
+    font-size:22px;
+}
+
+input{
+    width:100%;
+    border:none;
+    background:yellow;
+    text-align:center;
+    font-size:20px;
+}
+/* buttons */
+.btn-row{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+}
+
+button{
+    flex:1;
+    padding:10px;
+    font-size:15px;
+}
+
+/* mobile */
+@media (max-width:600px){
+td{ padding:6px; }
+input{ font-size:15px; padding:5px; }
+button{ padding:8px; font-size:14px; }
+}
+@media screen and (max-width:600px){
+
+    body{
+        margin:8px;
+    }
+
+    .title{
+        font-size:20px;
+        padding:12px 8px;
+        line-height:1.2;
+    }
+
+    td{
+        padding:8px 4px;
+        font-size:14px;
+    }
+
+    input{
+        min-height:40px;
+        font-size:18px;
+    }
+
+    button{
+        font-size:18px;
+        padding:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+
+<div class="title">
+    Capillary Need Calculator
+</div>
+</div>
+
+<div style="
+margin-top:8px;
+margin-bottom:8px;
+padding:10px;
+background:white;
+border:1px solid #cccccc;
+text-align:left;
+line-height:1.6;
+">
+
+<b>Purpose</b><br>
+
+Estimate the number of capillaries required to support the planned production loading quantity based on wire count, touchdown frequency, and capillary lifespan.
+
+<br><br>
+
+
+<b>Application</b><br>
+
+Used for capillary consumption planning, inventory preparation, production scheduling, and manufacturing resource planning.
+
+</div>
+
+<div
+style="
+margin-top:8px;
+margin-bottom:8px;
+padding:8px;
+background:#fff3cd;
+border:1px solid #ffcc00;
+font-weight:bold;
+color:#cc0000;
+text-align:center;
+"
+>
+Please input values in the yellow highlighted cells only.
+</div>
+
+<table style="table-layout:fixed;width:100%;">
+
+<tr>
+    <td class="header" style="width:25%;">Loading Qty</td>
+    <td colspan="2" class="yellow">
+        <input id="load">
+    </td>
+</tr>
+
+<tr>
+    <td class="header">Qty Wire in 1 unit</td>
+    <td colspan="2" class="yellow">
+        <input id="wire">
+    </td>
+</tr>
+
+<tr>
+    <td class="header">Machine Model</td>
+    <td class="header">Shinkawa</td>
+    <td class="header">ASM</td>
+</tr>
+
+<tr>
+    <td class="header">Qty touchdown / wire</td>
+    <td class="yellow">
+        <input id="td1" value="3">
+    </td>
+    <td class="yellow">
+        <input id="td2" value="4">
+    </td>
+</tr>
+
+<tr>
+    <td class="header">Capillary Life Span</td>
+    <td class="yellow">
+        <input id="life1" value="720000">
+    </td>
+    <td class="yellow">
+        <input id="life2" value="720000">
+    </td>
+</tr>
+
+<tr>
+    <td class="header">Qty Capillary Need</td>
+    <td class="result" id="res1"></td>
+    <td class="result" id="res2"></td>
+</tr>
+
+</table>
+
+<div class="btn-row">
+<button onclick="clearData()">Clear</button>
+<button onclick="goHome()">Back</button>
+
+</div>
+
+</div>
+
+<script>
+
+// ✅ DEFAULT VALUES
+const defaults = {
+    td1:"3",
+    td2:"4",
+    life1:"720000",
+    life2:"720000"
+};
+
+// ✅ STORE PREVIOUS VALUE
+let prev = {};
+
+// ✅ UNIVERSAL INPUT HANDLER (NO CHANGE)
+document.querySelectorAll("input").forEach(el => {
+
+    const id = el.id;
+
+    el.addEventListener("focus", () => {
+        prev[id] = el.value;
+        if(el.value !== "") el.value = "";   // clear
+    });
+
+    el.addEventListener("blur", () => {
+
+        if(el.value === ""){
+            if(defaults[id] !== undefined){
+                el.value = defaults[id];   // restore default
+            }else{
+                el.value = prev[id] || ""; // restore previous
+            }
+        }
+    });
+
+    el.addEventListener("input", calc);
+});
+
+// ✅ ✅ ✅ ENTER FLOW (FIXED PART)
+const flow = ["load","wire","td1","td2","life1","life2"];
+
+flow.forEach((id,i)=>{
+    document.getElementById(id).addEventListener("keydown", e=>{
+        if(e.key === "Enter"){
+            e.preventDefault();
+
+            if(i+1 < flow.length){
+                document.getElementById(flow[i+1]).focus();
+            }else{
+                e.target.blur();
+            }
+        }
+    });
+});
+
+// ✅ CALCULATION
+function calculate(load, wire, td, life){
+    if(isNaN(load)||isNaN(wire)||isNaN(td)||isNaN(life)) return "";
+    return Math.ceil((load*wire*td)/life).toFixed(2);
+}
+
+function calc(){
+
+    let load=parseFloat(loadEl.value);
+    let wire=parseFloat(wireEl.value);
+
+    let td1=parseFloat(td1El.value);
+    let td2=parseFloat(td2El.value);
+
+    let life1=parseFloat(life1El.value);
+    let life2=parseFloat(life2El.value);
+
+    res1.innerHTML=calculate(load,wire,td1,life1);
+    res2.innerHTML=calculate(load,wire,td2,life2);
+}
+
+// refs
+const loadEl=document.getElementById("load");
+const wireEl=document.getElementById("wire");
+const td1El=document.getElementById("td1");
+const td2El=document.getElementById("td2");
+const life1El=document.getElementById("life1");
+const life2El=document.getElementById("life2");
+
+// ✅ CLEAR
+function clearData(){
+
+    loadEl.value="";
+    wireEl.value="";
+
+    res1.innerHTML="";
+    res2.innerHTML="";
+
+    td1El.value="3";
+    td2El.value="4";
+    life1El.value="720000";
+    life2El.value="720000";
+}
+
+// ✅ BACK
+function goHome(){
+
+    const user =
+        sessionStorage.getItem(
+            "userEmail"
+        );
+
+    const key =
+        sessionStorage.getItem(
+            "userKey"
+        );
+
+
+window.location.href =
+    "index.html" +
+    window.location.search;
+
+}
+</script>
+<script src="tracking.js"></script>
+</body>
+</html>
