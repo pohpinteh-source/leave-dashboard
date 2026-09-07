@@ -1217,6 +1217,17 @@ const refreshResponse = await fetch(
 dashboardData = await refreshResponse.json();
 
 renderDashboard();
+// Clear form for next entry
+document.getElementById("name").value = "";
+document.getElementById("leaveType").value = "";
+document.getElementById("reason").value = "";
+
+// Reset date to today
+document.getElementById("date")._flatpickr.setDate(new Date());
+
+// Move cursor back to Name field
+document.getElementById("name").focus();
+
 
 
 
