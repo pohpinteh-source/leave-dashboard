@@ -1277,7 +1277,7 @@ new Date(row[2])
                     Edit
                 </button>
 
-                <button onclick="deleteLeave(${index})">
+<button onclick="deleteLeave(${row[5]})">
                     Delete
                 </button>
             </td>
@@ -1316,8 +1316,11 @@ async function deleteLeave(id){
             {
                 method:"POST",
                 body:JSON.stringify({
+
                     action:"deleteLeave",
-                    rowNumber:id + 2
+
+                    rowNumber:id
+
                 })
             }
         );
@@ -1327,15 +1330,17 @@ async function deleteLeave(id){
 
     if(result.success){
 
-        await refreshDashboardData();
-
         alert(
             "Leave Record Deleted"
         );
 
+        await refreshDashboardData();
+
     }
 
 }
+
+
 async function refreshDashboardData(){
 
     const response = await fetch(
