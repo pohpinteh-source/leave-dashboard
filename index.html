@@ -681,13 +681,8 @@ console.log("Fetching Dashboard API...");
     const data =
         await response.json();
 console.log(data);
-console.log(
-    JSON.stringify(
-        data.leaves,
-        null,
-        2
-    )
-);
+
+
 
 window.dashboardData = data;
 
@@ -722,6 +717,8 @@ console.log(data.employees);
 buildEmployeeFilter(
     data.employees
 );
+
+
 document
 .querySelectorAll(".monthBtn")
 .forEach(btn=>{
@@ -741,11 +738,7 @@ document
 
 renderDashboard();
 renderLeaveRecords();
-
-console.log(
-    "Leave Records:",
-    dashboardData.leaves
-);
+}
 
 
 });
@@ -1221,11 +1214,19 @@ function renderLeaveRecords(){
 
         html += `
         <tr>
-            <td>${index}</td>
-            <td>${row}</td>
-            <td>Test</td>
-            <td>Test</td>
-            <td>Test</td>
+            <td>${row[2]}</td>
+            <td>${row[1]}</td>
+            <td>${row[3]}</td>
+            <td>${row[4] || ""}</td>
+            <td>
+                <button onclick="editLeave(${index})">
+                    Edit
+                </button>
+
+                <button onclick="deleteLeave(${index})">
+                    Delete
+                </button>
+            </td>
         </tr>
         `;
 
@@ -1236,7 +1237,6 @@ function renderLeaveRecords(){
     ).innerHTML = html;
 
 }
-
 
 function editLeave(id){
 
@@ -1262,26 +1262,6 @@ function deleteLeave(id){
 
 }
 
-function editLeave(id){
-
-    alert("Edit Function : " + id);
-
-}
-
-function deleteLeave(id){
-
-    if(
-        confirm(
-            "Delete this leave record?"
-        )
-    ){
-
-        alert("Delete Function : " + id);
-
-    }
-
-}
-
 async function refreshDashboardData(){
 
     const response = await fetch(
@@ -1293,47 +1273,6 @@ async function refreshDashboardData(){
     renderDashboard();
 }
 
-function renderLeaveRecords(){
-
-    let html="";
-
-    dashboardData.leaves.forEach(row=>{
-
-        html += `
-        <tr>
-
-            <td>${row[2]}</td>
-
-            <td>${row[1]}</td>
-
-            <td>${row[3]}</td>
-
-            <td>${row[4]}</td>
-
-            <td>
-
-                <button
-                onclick="editLeave(${row[0]})">
-                Edit
-                </button>
-
-                <button
-                onclick="deleteLeave(${row[0]})">
-                Delete
-                </button>
-
-            </td>
-
-        </tr>
-        `;
-
-    });
-
-    document.getElementById(
-        "leaveRecordBody"
-    ).innerHTML = html;
-
-}
 
 
 async function submitLeave(){
