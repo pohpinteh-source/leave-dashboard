@@ -361,6 +361,16 @@ button:hover{
     height:40px;
     padding:0 20px;
 }
+.leaveRefreshBtn{
+    background:#FFFF00 !important;
+    color:black !important;
+    border:1px solid #999;
+    font-weight:bold;
+}
+
+.leaveRefreshBtn:hover{
+    background:#FFD966 !important;
+}
 
 
 .flatpickr-calendar{
@@ -597,9 +607,12 @@ R.P.H
         Monthly Team Calendar
     </h2>
 
-<button onclick="refreshDashboardData()">
+<button
+class="leaveRefreshBtn"
+onclick="refreshDashboardData()">
     Refresh
 </button>
+
 
 </div>
 <div style="overflow:auto">
@@ -654,10 +667,20 @@ class="employeeFilter">
 </div>
 
 <div class="card">
-
+<div class="calendarHeader">
 <h2>
 Leave Records
 </h2>
+<button
+class="leaveRefreshBtn"
+onclick="refreshDashboardData()">
+    Refresh
+</button>
+</div>
+
+
+
+
 
 <table class="leaveRecordTable">
 
@@ -687,7 +710,7 @@ const API_URL =
 
 let selectedMonth;
 let selectedYear;
-
+let editRowNumber = null;
 document.addEventListener("DOMContentLoaded", () => {
 
     flatpickr("#date",{
@@ -1294,11 +1317,38 @@ new Date(row[2])
 
 function editLeave(id){
 
-    alert(
-        "Edit Function : " + id
+    const sortedLeaves =
+    [...dashboardData.leaves]
+    .sort((a,b)=>
+        new Date(b[2]) -
+        new Date(a[2])
     );
 
+    const row =
+        sortedLeaves[id];
+
+    editRowNumber = row[5];
+
+    document.getElementById("name").value =
+        row[1];
+
+    document.getElementById("date")._flatpickr.setDate(
+        row[2]
+    );
+
+    document.getElementById("leaveType").value =
+        row[3];
+
+    document.getElementById("reason").value =
+        row[4] || "";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
 }
+
 
 async function deleteLeave(id){
 
@@ -1355,13 +1405,29 @@ async function refreshDashboardData(){
 
 async function submitLeave(){
 
-    const data = {
-        name: document.getElementById("name").value,
-        date: document.getElementById("date").value,
-        leaveType: document.getElementById("leaveType").value,
-        reason: document.getElementById("reason").value || "N/A"
-    };
+const data = {
 
+    action:
+        editRowNumber
+        ? "updateLeave"
+        : "submitLeave",
+
+    rowNumber:
+        editRowNumber,
+
+    name:
+        document.getElementById("name").value,
+
+    date:
+        document.getElementById("date").value,
+
+    leaveType:
+        document.getElementById("leaveType").value,
+
+    reason:
+        document.getElementById("reason").value || "N/A"
+
+};
     try{
 
         const response = await fetch(API_URL,{
@@ -1387,7 +1453,7 @@ dashboardData = await refreshResponse.json();
 
 renderDashboard();
 renderLeaveRecords();
-
+editRowNumber = null;
 
 
 
