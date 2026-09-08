@@ -681,7 +681,14 @@ console.log("Fetching Dashboard API...");
     const data =
         await response.json();
 console.log(data);
-console.log(data.leaves);
+console.log(
+    JSON.stringify(
+        data.leaves,
+        null,
+        2
+    )
+);
+
 window.dashboardData = data;
 
 const today = new Date();
@@ -1198,11 +1205,14 @@ ${count["OT"]}
 
     body.innerHTML = html;
 }
+
+
+
 function renderLeaveRecords(){
 
     let html = "";
 
-    dashboardData.leaves.forEach(row => {
+    dashboardData.leaves.forEach((row,index)=>{
 
         html += `
         <tr>
@@ -1217,11 +1227,11 @@ function renderLeaveRecords(){
 
             <td>
 
-                <button onclick="editLeave(${row[0]})">
+                <button onclick="editLeave(${index})">
                     Edit
                 </button>
 
-                <button onclick="deleteLeave(${row[0]})">
+                <button onclick="deleteLeave(${index})">
                     Delete
                 </button>
 
@@ -1235,6 +1245,30 @@ function renderLeaveRecords(){
     document.getElementById(
         "leaveRecordBody"
     ).innerHTML = html;
+
+}
+
+function editLeave(id){
+
+    alert(
+        "Edit Function : " + id
+    );
+
+}
+
+function deleteLeave(id){
+
+    if(
+        confirm(
+            "Delete this leave record?"
+        )
+    ){
+
+        alert(
+            "Delete Function : " + id
+        );
+
+    }
 
 }
 
