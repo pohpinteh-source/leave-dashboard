@@ -617,7 +617,31 @@ class="employeeFilter">
 </div>
 </div>
 
+<div class="card">
 
+<h2>
+Leave Records
+</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Name</th>
+<th>Leave Type</th>
+<th>Reason</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="leaveRecordBody">
+
+</tbody>
+
+</table>
+
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script><script>
@@ -657,7 +681,7 @@ console.log("Fetching Dashboard API...");
     const data =
         await response.json();
 console.log(data);
-
+console.log(data.leaves);
 window.dashboardData = data;
 
 const today = new Date();
@@ -708,8 +732,8 @@ document
                 btn.dataset.month
             );
 
-        renderDashboard();
-
+renderDashboard();
+renderLeaveRecords();
     });
 
 });
@@ -1174,6 +1198,66 @@ ${count["OT"]}
 
     body.innerHTML = html;
 }
+function renderLeaveRecords(){
+
+    let html = "";
+
+    dashboardData.leaves.forEach(row => {
+
+        html += `
+        <tr>
+
+            <td>${row[2]}</td>
+
+            <td>${row[1]}</td>
+
+            <td>${row[3]}</td>
+
+            <td>${row[4] || ""}</td>
+
+            <td>
+
+                <button onclick="editLeave(${row[0]})">
+                    Edit
+                </button>
+
+                <button onclick="deleteLeave(${row[0]})">
+                    Delete
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    document.getElementById(
+        "leaveRecordBody"
+    ).innerHTML = html;
+
+}
+
+function editLeave(id){
+
+    alert("Edit Function : " + id);
+
+}
+
+function deleteLeave(id){
+
+    if(
+        confirm(
+            "Delete this leave record?"
+        )
+    ){
+
+        alert("Delete Function : " + id);
+
+    }
+
+}
+
 async function refreshDashboardData(){
 
     const response = await fetch(
@@ -1184,6 +1268,50 @@ async function refreshDashboardData(){
 
     renderDashboard();
 }
+
+function renderLeaveRecords(){
+
+    let html="";
+
+    dashboardData.leaves.forEach(row=>{
+
+        html += `
+        <tr>
+
+            <td>${row[2]}</td>
+
+            <td>${row[1]}</td>
+
+            <td>${row[3]}</td>
+
+            <td>${row[4]}</td>
+
+            <td>
+
+                <button
+                onclick="editLeave(${row[0]})">
+                Edit
+                </button>
+
+                <button
+                onclick="deleteLeave(${row[0]})">
+                Delete
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    document.getElementById(
+        "leaveRecordBody"
+    ).innerHTML = html;
+
+}
+
+
 async function submitLeave(){
 
     const data = {
@@ -1217,6 +1345,11 @@ const refreshResponse = await fetch(
 dashboardData = await refreshResponse.json();
 
 renderDashboard();
+renderLeaveRecords();
+
+
+
+
 // Clear form for next entry
 document.getElementById("name").value = "";
 document.getElementById("leaveType").value = "";
