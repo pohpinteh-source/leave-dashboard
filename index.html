@@ -264,6 +264,42 @@ button:hover{
     background:#2E75B6;
     color:white;
 }
+
+.leaveRecordTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+.leaveRecordTable th{
+    background:#2E75B6;
+    color:white;
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:center;
+}
+
+.leaveRecordTable td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.leaveRecordTable tr:nth-child(even){
+    background:#f8f8f8;
+}
+
+.leaveRecordTable tr:hover{
+    background:#EAF3FF;
+}
+
+.leaveRecordTable button{
+    padding:6px 12px;
+    margin:2px;
+    min-width:70px;
+}
+
+
 .filterGroup{
     display:flex;
     flex-direction:column;
@@ -623,7 +659,7 @@ class="employeeFilter">
 Leave Records
 </h2>
 
-<table>
+<table class="leaveRecordTable">
 
 <thead>
 <tr>
@@ -732,16 +768,15 @@ document
         btn.classList.add("active");
 
         selectedMonth =
-            parseInt(
-                btn.dataset.month
-            );
+            parseInt(btn.dataset.month);
 
-renderDashboard();
-renderLeaveRecords();
-}
+        renderDashboard();
+        renderLeaveRecords();
 
+    });
 
 });
+
 document
 .querySelectorAll(".yearBtn")
 .forEach(btn=>{
@@ -760,12 +795,16 @@ document
             );
 
         renderDashboard();
+        renderLeaveRecords();
 
     });
 
 });
-    renderDashboard();
+
+renderDashboard();
+renderLeaveRecords();
 }
+
 
 function populateEmployees(
     employees
@@ -828,26 +867,26 @@ const month = selectedMonth;
 
 const year = selectedYear;
 
+const checkedEmployees =
+    [...document.querySelectorAll(".empFilter")]
+        .filter(x=>x.checked)
+        .map(x=>x.value);
 
+renderCalendar(
+    checkedEmployees,
+    month,
+    year
+);
 
-    const checkedEmployees =
-        [...document.querySelectorAll(".empFilter")]
-            .filter(x=>x.checked)
-            .map(x=>x.value);
+renderSummary(
+    checkedEmployees,
+    month,
+    year
+);
 
-    renderCalendar(
-        checkedEmployees,
-        month,
-        year
-    );
+renderLeaveRecords();
 
-    renderSummary(
-        checkedEmployees,
-        month,
-        year
-    );
 }
-
 
 function renderCalendar(employees, month, year){
 
@@ -1207,17 +1246,32 @@ ${count["OT"]}
 
 
 function renderLeaveRecords(){
-
+console.log(
+    "Leave Records Data",
+    dashboardData.leaves
+);
     let html = "";
 
-    dashboardData.leaves.forEach((row,index)=>{
+const sortedLeaves =
+[...dashboardData.leaves]
+.sort((a,b)=>
+    new Date(b[2]) - new Date(a[2])
+);
 
+sortedLeaves.forEach((row,index)=>{
         html += `
         <tr>
-            <td>${row[2]}</td>
+<td>${
+new Date(row[2])
+.toISOString()
+.substring(0,10)
+}</td>
             <td>${row[1]}</td>
             <td>${row[3]}</td>
-            <td>${row[4] || ""}</td>
+<td style="text-align:left;padding-left:10px;">
+    ${row[4] || ""}
+</td>
+
             <td>
                 <button onclick="editLeave(${index})">
                     Edit
@@ -1271,9 +1325,8 @@ async function refreshDashboardData(){
     dashboardData = await response.json();
 
     renderDashboard();
+    renderLeaveRecords();
 }
-
-
 
 async function submitLeave(){
 
