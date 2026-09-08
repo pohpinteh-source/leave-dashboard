@@ -1300,22 +1300,42 @@ function editLeave(id){
 
 }
 
-function deleteLeave(id){
+async function deleteLeave(id){
 
     if(
-        confirm(
+        !confirm(
             "Delete this leave record?"
         )
     ){
+        return;
+    }
+
+    const response =
+        await fetch(
+            API_URL,
+            {
+                method:"POST",
+                body:JSON.stringify({
+                    action:"deleteLeave",
+                    rowNumber:id + 2
+                })
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if(result.success){
+
+        await refreshDashboardData();
 
         alert(
-            "Delete Function : " + id
+            "Leave Record Deleted"
         );
 
     }
 
 }
-
 async function refreshDashboardData(){
 
     const response = await fetch(
