@@ -741,7 +741,12 @@ document
 
 renderDashboard();
 renderLeaveRecords();
-    });
+
+console.log(
+    "Leave Records:",
+    dashboardData.leaves
+);
+
 
 });
 document
@@ -1216,27 +1221,11 @@ function renderLeaveRecords(){
 
         html += `
         <tr>
-
-            <td>${row[2]}</td>
-
-            <td>${row[1]}</td>
-
-            <td>${row[3]}</td>
-
-            <td>${row[4] || ""}</td>
-
-            <td>
-
-                <button onclick="editLeave(${index})">
-                    Edit
-                </button>
-
-                <button onclick="deleteLeave(${index})">
-                    Delete
-                </button>
-
-            </td>
-
+            <td>${index}</td>
+            <td>${row}</td>
+            <td>Test</td>
+            <td>Test</td>
+            <td>Test</td>
         </tr>
         `;
 
@@ -1247,6 +1236,7 @@ function renderLeaveRecords(){
     ).innerHTML = html;
 
 }
+
 
 function editLeave(id){
 
